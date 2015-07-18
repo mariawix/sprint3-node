@@ -1,7 +1,7 @@
 /**
  * Created by mariao on 7/17/15.
  */
-(function(){
+(function () {
     var PORT = 8080, HOST = 'localhost', ROOT = './client',
         http = require('http'), fs = require('fs'), db = require('./db/db'),
         url = require('url'), querystring = require('querystring');
@@ -41,11 +41,36 @@
         res.end(data);
     }
 
+
     function getFile(path, res) {
-        var fileName = (path === '/') ? ROOT + '/index.html' : ROOT + path;
-        fs.readFile(fileName, function(err, data) {
+        var fileName, pathLen, contentType;
+        if (path === '/')
+            path = '/index.html';
+        fileName = ROOT + path;
+        contentType = getContentType(path);
+        pathLen = path.length;
+        path.indexOf('.css', pathLen - 4) > 0
+        fs.readFile(fileName, function (err, data) {
+            res.setHeader('content-type', contentType + '; charset=utf-8');
             sendResponse(err, data, res);
         });
+    }
+
+    function getContentType(path) {
+        var pathLen = path.length;
+        if (path.indexOf('.js', pathLen - 3) > 0) {
+            return 'text/javascript';
+        }
+        if (path.indexOf('.css', pathLen - 4) > 0) {
+            return 'text/css';
+        }
+        if (path.indexOf('.ico', pathLen - 4) > 0) {
+            return 'image/x-icon';
+        }
+        if (path.indexOf('.html', pathLen - 5) > 0) {
+            return 'text/html';
+        }
+        return 'text/plain';
     }
 
 })();
