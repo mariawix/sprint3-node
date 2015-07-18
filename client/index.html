@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head lang="en" dir="ltr">
+    <title>Dynamic Table</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script>
+        var app = {};
+    </script>
+</head>
+<body class="default-theme">
+<div class="page">
+    <header class="page-header">
+        <h1>Sprint 3</h1>
+        <button type="button" class="switch-theme-btn">Switch Theme</button>
+    </header>
+    <main class="page-content">
+        <article class="store">
+            <h2>Online Store</h2>
+            <div class="catalog">
+                <div class="thead">
+
+                </div>
+                <div class="tbody">
+
+                </div>
+            </div>
+            <footer>
+                <div class="cart-container">
+                    <h3>Cart</h3>
+                    <label for="total-bill-id">
+                        Total:
+                        <input id="total-bill-id" type="number" class="total-bill" value="0" disabled />
+                    </label>
+                    <div class="cart-details visuallyhidden">
+                        <h4>Added Items</h4>
+                        <div class="cart-table">
+                            <div class="thead">
+
+                            </div>
+                            <div class="tbody">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coupon-input-container visuallyhidden">
+                        <label for="coupon-input-id">
+                            Coupon:
+                            <input type="text" class="coupon-input" id="coupon-input-id" />
+                        </label>
+                        <button type="button" class="coupon-submit-btn">Submit</button>
+                        <div class="coupon-table-container">
+                            <h4>Added Coupons</h4>
+                            <div class="coupon-table">
+                                <div class="thead">
+
+                                </div>
+                                <div class="tbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="hide-cart-btn visuallyhidden">Hide</button>
+                    <button type="button" class="view-cart-btn">View</button>
+                    <button type="button" class="reset-cart-btn">Reset</button>
+                </div>
+                <div class="paging-size-container">
+                    <label for="paging-size-id">
+                        Items Per Page:
+                        <input id="paging-size-id" type="number" value="10" class="paging-size" min="5" max="50" />
+                    </label>
+                </div>
+                <nav>
+                    <ul class="pagination-list">
+                    </ul>
+                </nav>
+            </footer>
+        </article>
+    </main>
+</div>
+
+<script src="js/pubsub.js"></script>
+<script src="js/view.js"></script>
+<script src="js/quantityButtons.js"></script>
+<script src="js/pagination.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/cart.js"></script>
+
+
+
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
