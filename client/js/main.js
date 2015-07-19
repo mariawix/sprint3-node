@@ -1,21 +1,23 @@
-function sendRequest(method, path, query, callback) {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        var responseText = '';
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            if (xmlhttp.responseText !== '') {
-                responseText = JSON.parse(xmlhttp.responseText);
-            }
-            callback(responseText);
-        }
-    };
-    xmlhttp.open(method, path + '?' + query, true);
-    xmlhttp.send();
-}
-
 (function (app) {
     "use strict";
-    sendRequest('GET', '/getItems', 'startIndex=0&endIndex=100', run);
+
+    app.sendRequest = function(method, path, query, callback) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            var responseText = '';
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (xmlhttp.responseText !== '') {
+                    responseText = JSON.parse(xmlhttp.responseText);
+                }
+                callback(responseText);
+            }
+        };
+        xmlhttp.open(method, path + '?' + query, true);
+        xmlhttp.send();
+    };
+
+
+    app.sendRequest('GET', '/getItems', '', run);
 
     function run(items) {
         var catalog = app.catalog,

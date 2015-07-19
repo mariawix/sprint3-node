@@ -1,5 +1,5 @@
 /**
- * DOM helpers.
+ * Common DOM helpers.
  */
 var view = (function() {
     var hiddenElementClass = 'visuallyhidden',

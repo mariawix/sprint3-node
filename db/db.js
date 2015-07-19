@@ -1,5 +1,5 @@
 /**
- * Created by mariao on 7/17/15.
+ * Database
  */
 module.exports = (function() {
     var itemsDB, couponsDB, root = './data';
@@ -33,8 +33,12 @@ module.exports = (function() {
         }
     }
 
-    function getItems(startIndex, endIndex) {
-        return itemsDB.items.slice(startIndex, endIndex);
+    /**
+     * Returns all the items.
+     * @returns {Array} array of items
+     */
+    function getItems() {
+        return itemsDB.items;
     }
 
     /**
@@ -244,9 +248,9 @@ module.exports = (function() {
         })();
 
         return {
-            coupons: coupons,
             couponsNum: coupons.length,
-            couponClasses: {Coupon: Coupon, DiscountCoupon: DiscountCoupon, FreeItemCoupon: FreeItemCoupon}
+            couponClasses: {Coupon: Coupon, DiscountCoupon: DiscountCoupon, FreeItemCoupon: FreeItemCoupon},
+            coupons: coupons
         }
     }
     return {

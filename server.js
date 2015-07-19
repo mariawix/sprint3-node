@@ -1,5 +1,5 @@
 /**
- * Created by mariao on 7/17/15.
+ * Server
  */
 (function () {
     var PORT = 8080, HOST = 'localhost', ROOT = './client',
@@ -13,7 +13,7 @@
             pars = querystring.parse(uri.query), pathname = uri.pathname;
         switch (pathname) {
             case '/getItems':
-                sendResponse('', JSON.stringify(db.getItems(pars.startIndex, pars.endIndex)), res);
+                sendResponse('', JSON.stringify(db.getItems()), res);
                 break;
             case '/getCouponByID':
                 sendResponse('', JSON.stringify(db.getCouponByID(pars.couponID)), res);
@@ -22,7 +22,7 @@
                 sendResponse('', JSON.stringify(db.transact(pars.itemsData, pars.couponIDs)), res);
                 break;
             default:
-                getFile(pathname, res);
+                sendFile(pathname, res);
         }
     }).listen(PORT, HOST);
 
@@ -31,6 +31,12 @@
     /*******************************************************************************************************************
      *                                                      Helpers
      ******************************************************************************************************************/
+    /**
+     * Sends HTTP response.
+     * @param {Object} err error
+     * @param {String} data data to be sent
+     * @param {Object} res HTTP response
+     */
     function sendResponse(err, data, res) {
         if (err) {
             res.writeHead(404);
@@ -42,32 +48,42 @@
     }
 
 
-    function getFile(path, res) {
+    /**
+     * Serves static requests.
+     * @param {String} filename path to the file to be sent
+     * @param {Object} res HTTP response object
+     */
+    function sendFile(filename, res) {
         var fileName, pathLen, contentType;
-        if (path === '/')
-            path = '/index.html';
-        fileName = ROOT + path;
-        contentType = getContentType(path);
-        pathLen = path.length;
-        path.indexOf('.css', pathLen - 4) > 0
+        if (filename === '/')
+            filename = '/index.html';
+        fileName = ROOT + filename;
+        contentType = getContentType(filename);
+        pathLen = filename.length;
+        filename.indexOf('.css', pathLen - 4) > 0
         fs.readFile(fileName, function (err, data) {
             res.setHeader('content-type', contentType + '; charset=utf-8');
             sendResponse(err, data, res);
         });
     }
 
-    function getContentType(path) {
-        var pathLen = path.length;
-        if (path.indexOf('.js', pathLen - 3) > 0) {
+    /**
+     * Gets a file name and returns an appropriate content type
+     * @param {String} filename path
+     * @returns {String} content type for the file
+     */
+    function getContentType(filename) {
+        var pathLen = filename.length;
+        if (filename.indexOf('.js', pathLen - 3) > 0) {
             return 'text/javascript';
         }
-        if (path.indexOf('.css', pathLen - 4) > 0) {
+        if (filename.indexOf('.css', pathLen - 4) > 0) {
             return 'text/css';
         }
-        if (path.indexOf('.ico', pathLen - 4) > 0) {
+        if (filename.indexOf('.ico', pathLen - 4) > 0) {
             return 'image/x-icon';
         }
-        if (path.indexOf('.html', pathLen - 5) > 0) {
+        if (filename.indexOf('.html', pathLen - 5) > 0) {
             return 'text/html';
         }
         return 'text/plain';

@@ -148,7 +148,7 @@
         couponCode = popCouponCode();
         if (getCouponByID(couponCode))
             return;
-        sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function(coupon) {
+        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function(coupon) {
             if (coupon !== '') {
                 addedCoupons.push(coupon);
                 if (coupon.discount) {
