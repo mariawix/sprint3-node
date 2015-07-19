@@ -57,7 +57,7 @@ var quantityButtons = (function() {
         var atts = {'className': itemAmountInputClass, 'value': 0},
             itemAmountElement;
         if (item.quantity === 0) {
-            atts['disabled'] = 'true';
+            atts.disabled = 'true';
         }
         itemAmountElement = view.createCustomElement('input', atts);
         eventBus.subscribe(eventBus.eventNames.resetItemAmount + item.id, function() {

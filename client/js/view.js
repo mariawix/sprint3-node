@@ -73,7 +73,7 @@ var view = (function() {
             var headerCell,
                 headerCellAttributes =  {
                     'innerText': content,
-                    'className': tableHeadCellClass + ' ' + content
+                    'className': tableHeadCellClass + ' ' + tableHeadCellClass + '-' + content
                 };
             headerCell = appendChild(row, 'div', headerCellAttributes);
             appendSortBtns(headerCell, content, true);
@@ -141,7 +141,7 @@ var view = (function() {
          * @param {Function} appendCellContent a callback function to run to append content to cells
          */
         function createRowElement(keys, obj, index, appendCellContent) {
-            var rowElementClass = tableRowClass + ' ' + obj.type,
+            var rowElementClass = tableRowClass + ' ' + tableRowClass + '-' + obj.type,
                 rowElement = createCustomElement('div', {'className': rowElementClass, 'dataset': {'index': index}});
             keys.forEach(function(key) {
                 var className = key + ' ' + tableBodyCellClass,

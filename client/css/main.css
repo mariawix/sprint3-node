@@ -94,10 +94,10 @@ button {
  * Module Rules
  **************************************************************************************************/
 /* Catalogue */
-.catalog .tr.sale {
+.catalog .tr-sale {
     font-weight: bold;
 }
-.image.td {
+.image {
     position: relative;
 }
 .catalog .tr img {
@@ -111,7 +111,7 @@ button {
      width: 30%;
      text-align: left;
  }
-.description.th {
+.th-description {
     text-align: center;
 }
 .old-price {
@@ -173,7 +173,7 @@ button {
     margin-left: 0.5rem;
 }
 
-.item-amount .amount[disabled] {
+.item-amount .amount {
     border: 1px solid;
 }
 /* Pagination */
@@ -216,7 +216,6 @@ button {
     display: block;
     margin: 0 auto;
     padding: 0.15rem 0.25rem;
-    width: 2rem;
     font-size: 0.7rem;
 }
 /**************************************************************************************************
@@ -230,7 +229,7 @@ button {
 .catalog .td, .th {
     border-color: #fff;
 }
-.tr.out {
+.tr-out {
     color: #808080;
 }
 input,
@@ -245,7 +244,7 @@ button {
 .item-amount .amount {
     color: #fff;
 }
-.item-amount .amount[disabled] {
+.item-amount .amount {
     background-color: #f5f5f5;
     border-color: #ddd;
 }
