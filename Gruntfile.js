@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
     grunt.config.init({
         jshint: {
-            src: ['client/js/*.js', 'server.js'],
+            src: ['client/js/*.js', 'server.js', 'db/*.js'],
             options: {
                 asi: true
             }
@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-                files: ['client/js/*.js'],
+                files: ['client/js/*.js', 'server.js', 'db/*.js'],
                 tasks: ['jshint']
             },
             css: {
@@ -28,14 +28,14 @@ module.exports = function(grunt) {
         uglify: {
             main: {
                 files: {
-                    'target/scripts.min.js': ['client/js/*.js', 'server.js']
+                    'target/js/scripts.min.js': ['client/js/*.js', 'server.js', 'db/*.js']
                 }
             }
         },
         cssmin: {
             main: {
                 files: {
-                    'target/style.min.css': ['client/css/*.css']
+                    'target/css/style.min.css': ['client/css/*.css']
                 }
             }
         },
@@ -50,11 +50,23 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: 'client/',
-                        src: ['**', '!js/**', '!css/**', '!index.html'],
+                        cwd: 'client',
+                        src: ['img/*'],
                         dest: 'target/'
                     }
                 ]
+            }
+        },
+        eslint: {
+            target: ['client/js/*.js', 'server.js', 'db/*.js']
+        },
+        dox: {
+            options: {
+                title: "Shopping Cart"
+            },
+            files: {
+                src: ['client/js/*.js', 'server.js', 'db/*.js'],
+                dest: 'docs'
             }
         }
     });
@@ -67,10 +79,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-processhtml');
+    grunt.loadNpmTasks('grunt-eslint');
+    grunt.loadNpmTasks('grunt-dox');
 
     grunt.registerTask('check', ['jshint', 'csslint']);
     grunt.registerTask('build', ['clean', 'copy', 'uglify', 'cssmin', 'processhtml']);
 
-    grunt.registerTask('default', ['check', 'build']);
+    grunt.registerTask('default', ['check', 'build', 'eslint', 'dox']);
     grunt.registerTask('dev', ['connect:dev']);
 };

@@ -1,26 +1,14 @@
 /**
  * Common DOM helpers.
  */
-var view = (function() {
-    var hiddenElementClass = 'visuallyhidden',
-        tableHeadCellClass = 'th',
-        tableBodyCellClass = 'td',
-        tableHeadClass = 'thead',
-        tableBodyClass = 'tbody',
-        tableRowClass = 'tr';
-    /**
-     * Creates a new DOM element and appends it to the provided parent element.
-     * @param {Element} parentElement the parent element of the newly created element
-     * @param {String} tagName the tag name of the created element
-     * @param {Object} attributes an object specifying attributes of the child element
-     * @returns {Element} the newly created element
-     */
-    function appendChild(parentElement, tagName, attributes) {
-        var attributeName, childElement;
-        childElement = createCustomElement(tagName, attributes);
-        parentElement.appendChild(childElement);
-        return childElement;
-    }
+var view = (function () {
+    "use strict";
+    var hiddenElementClass = "visuallyhidden",
+        tableHeadCellClass = "th",
+        tableBodyCellClass = "td",
+        tableHeadClass = "thead",
+        tableBodyClass = "tbody",
+        tableRowClass = "tr";
 
     /**
      * Creates a new element with the given tag name and attributes.
@@ -31,7 +19,7 @@ var view = (function() {
     function createCustomElement(tagName, attributes) {
         var element = document.createElement(tagName), attKey, objKey;
         for (attKey in attributes) {
-            if ((typeof attributes[attKey]) === 'object') {
+            if ((typeof attributes[attKey]) === "object") {
                 for (objKey in attributes[attKey]) {
                     element[attKey][objKey] = attributes[attKey][objKey];
                 }
@@ -44,13 +32,28 @@ var view = (function() {
     }
 
     /**
+     * Creates a new DOM element and appends it to the provided parent element.
+     * @param {Element} parentElement the parent element of the newly created element
+     * @param {String} tagName the tag name of the created element
+     * @param {Object} attributes an object specifying attributes of the child element
+     * @returns {Element} the newly created element
+     */
+    function appendChild(parentElement, tagName, attributes) {
+        var childElement;
+        childElement = createCustomElement(tagName, attributes);
+        parentElement.appendChild(childElement);
+        return childElement;
+    }
+
+
+    /**
      * Returns a child element with given class name, contained inside specified parent element.
      * @param {Element} parentElement parent element to search in
      * @param {String} className class name of the child element
      * @returns {Element} child element if found, undefined - otherwise
      */
     function getElementByClassName(parentElement, className) {
-        return parentElement.querySelector('.' + className);
+        return parentElement.querySelector("." + className);
     }
 
     /**
@@ -60,28 +63,26 @@ var view = (function() {
      * @param {Function} appendSortBtns a callback function appending sort buttons to header cells
      */
     function loadTableHead(tableElement, headerContent, appendSortBtns) {
-        var row = createCustomElement('div', {'className': tableRowClass}),
+        var row = createCustomElement("div", {"className": tableRowClass}),
             tableHeadElement = getElementByClassName(tableElement, tableHeadClass);
 
         /**
          * Appends a header cell to the given head row.
-         * @param {Element} row a row element
          * @param {String} content text content of the created header cell
-         * @param {Function} appendSortBtns a callback function appending sort buttons to the header cell
          */
-        function appendHeaderCell(row, content, appendSortBtns) {
+        function appendHeaderCell(content) {
             var headerCell,
-                headerCellAttributes =  {
-                    'innerText': content,
-                    'className': tableHeadCellClass + ' ' + tableHeadCellClass + '-' + content
+                headerCellAttributes = {
+                    "innerText": content,
+                    "className": tableHeadCellClass + " " + tableHeadCellClass + "-" + content
                 };
-            headerCell = appendChild(row, 'div', headerCellAttributes);
+            headerCell = appendChild(row, "div", headerCellAttributes);
             appendSortBtns(headerCell, content, true);
             appendSortBtns(headerCell, content, false);
         }
 
-        headerContent.forEach(function(header) {
-            appendHeaderCell(row, header, appendSortBtns);
+        headerContent.forEach(function (header) {
+            appendHeaderCell(header);
         });
         tableHeadElement.appendChild(row);
         tableElement.appendChild(tableHeadElement);
@@ -123,7 +124,7 @@ var view = (function() {
      */
     function getFirstBodyRow(tableElement) {
         var tableBodyElement = getElementByClassName(tableElement, tableBodyClass);
-        return getElementByClassName(tableBodyElement, tableRowClass + ':first-child');
+        return getElementByClassName(tableBodyElement, tableRowClass + ":first-child");
     }
 
     /**
@@ -133,27 +134,26 @@ var view = (function() {
      * @param {Function} appendCellContent a callback function to run to append content to cells
      */
     function createRowElements(objects, keys, appendCellContent) {
-        var i, rowElement, rowElements = [];
+        var i, rowElements = [];
+
         /**
          * Creates a row element.
          * @param {Object} obj object corresponding to the row
          * @param {Number} index row index
-         * @param {Function} appendCellContent a callback function to run to append content to cells
          */
-        function createRowElement(keys, obj, index, appendCellContent) {
-            var rowElementClass = tableRowClass + ' ' + tableRowClass + '-' + obj.type,
-                rowElement = createCustomElement('div', {'className': rowElementClass, 'dataset': {'index': index}});
-            keys.forEach(function(key) {
-                var className = key + ' ' + tableBodyCellClass,
-                    cell = appendChild(rowElement, 'div', {'className': className});
+        function createRowElement(obj, index) {
+            var rowElementClass = tableRowClass + " " + tableRowClass + "-" + obj.type,
+                rowElement = createCustomElement("div", {"className": rowElementClass, "dataset": {"index": index}});
+            keys.forEach(function (key) {
+                var className = key + " " + tableBodyCellClass,
+                    cell = appendChild(rowElement, "div", {"className": className});
                 appendCellContent(key, obj, cell);
             });
             return rowElement;
         }
 
         for (i = 0; i < objects.length; i++) {
-            rowElement = createRowElement(keys, objects[i], i, appendCellContent);
-            rowElements.push(rowElement);
+            rowElements.push(createRowElement(objects[i], i));
         }
         return rowElements;
     }
@@ -163,7 +163,7 @@ var view = (function() {
      * @param {Array} elements array of hidden elements
      */
     function exposeElements(elements) {
-        elements.forEach(function(element) {
+        elements.forEach(function (element) {
             if (element.classList.contains(hiddenElementClass)) {
                 element.classList.remove(hiddenElementClass);
             }
@@ -175,7 +175,7 @@ var view = (function() {
      * @param {Array} elements array of elements to hide
      */
     function hideElements(elements) {
-        elements.forEach(function(element) {
+        elements.forEach(function (element) {
             if (!element.classList.contains(hiddenElementClass)) {
                 element.classList.add(hiddenElementClass);
             }
@@ -197,5 +197,5 @@ var view = (function() {
 
         hideElements: hideElements,
         exposeElements: exposeElements
-    }
+    };
 }());

@@ -2,10 +2,10 @@
  * Loads cart module into the app.
  */
 (function (app) {
-    'use strict';
+    "use strict";
     var eventBus = app.eventBus,
 
-        itemsTableHeaders = ['id', 'name', 'price', 'amount', 'discount', 'total'],
+        itemsTableHeaders = ["id", "name", "price", "amount", "discount", "total"],
         couponDiscount = 0,
         addedCoupons = [],
         addedItems = {};
@@ -112,7 +112,7 @@
     /**
      * Returns item discount with respect to discounts of coupons added so far.
      * @param {Object} item an item instance
-     * @returns {*} total discount
+     * @returns {Number} total discount
      */
     function getDiscount(item) {
         var discount = item.discount + couponDiscount;
@@ -134,7 +134,7 @@
     /**
      * Returns coupon object by coupon code
      * @param {String} couponCode id of a coupon
-     * @returns {*} coupon object with this id
+     * @returns {Object} coupon object with this id
      */
     function getCouponByID(couponCode) {
         for (var i = 0; i < addedCoupons.length; i++) {
@@ -152,8 +152,8 @@
         couponCode = popCouponCode();
         if (getCouponByID(couponCode))
             return;
-        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
-            if (coupon !== '') {
+        app.sendRequest("GET", "/getCouponByID", "couponID=" + couponCode, function (coupon) {
+            if (coupon !== "") {
                 addedCoupons.push(coupon);
                 if (coupon.discount) {
                     couponDiscount += coupon.discount;
@@ -170,29 +170,29 @@
     /**************************************************************************************************
      *                                               UI Manipulations
      **************************************************************************************************/
-    var couponSubmitBtn = document.querySelector('.coupon-submit-btn'),
-        resetCartBtn = document.querySelector('.reset-cart-btn'),
-        viewCartBtn = document.querySelector('.view-cart-btn'),
-        hideCartBtn = document.querySelector('.hide-cart-btn');
+    var couponSubmitBtn = document.querySelector(".coupon-submit-btn"),
+        resetCartBtn = document.querySelector(".reset-cart-btn"),
+        viewCartBtn = document.querySelector(".view-cart-btn"),
+        hideCartBtn = document.querySelector(".hide-cart-btn");
 
     /**
      * Adds all cart event handlers.
      */
     function addEventListeners() {
-        hideCartBtn.addEventListener('click', function (e) {
+        hideCartBtn.addEventListener("click", function (e) {
             e.preventDefault();
             hideCart();
         });
-        resetCartBtn.addEventListener('click', function (e) {
+        resetCartBtn.addEventListener("click", function (e) {
             e.preventDefault();
             resetCart();
         });
-        viewCartBtn.addEventListener('click', function (e) {
+        viewCartBtn.addEventListener("click", function (e) {
             e.preventDefault();
             exposeCart();
             refreshCart();
         });
-        couponSubmitBtn.addEventListener('click', function (e) {
+        couponSubmitBtn.addEventListener("click", function (e) {
             e.preventDefault();
             addCoupon();
         });
@@ -205,14 +205,14 @@
     /**************************************************************************************************
      *                                              DOM Helpers
      **************************************************************************************************/
-    var couponInputField = document.querySelector('.coupon-input'),
-        couponInputContainer = document.querySelector('.coupon-input-container'),
-        cartDetails = document.querySelector('.cart-details'),
-        itemsTableElement = document.querySelector('.cart-table'),
-        couponTableElement = document.querySelector('.coupon-table'),
-        totalBillElement = document.querySelector('.total-bill'),
+    var couponInputField = document.querySelector(".coupon-input"),
+        couponInputContainer = document.querySelector(".coupon-input-container"),
+        cartDetails = document.querySelector(".cart-details"),
+        itemsTableElement = document.querySelector(".cart-table"),
+        couponTableElement = document.querySelector(".coupon-table"),
+        totalBillElement = document.querySelector(".total-bill"),
 
-        couponTableHeaders = ['code', 'details'];
+        couponTableHeaders = ["code", "details"];
 
     /**
      * Initializes cart tables.
@@ -239,10 +239,10 @@
      */
     function appendItemsTableCellContent(cellClass, item, cell) {
         switch (cellClass) {
-            case 'total':
+            case "total":
                 cell.innerText = String((getItemPrice(item) * item.amount).toFixed(2));
                 break;
-            case 'discount':
+            case "discount":
                 cell.innerText = getDiscount(item);
                 break;
             default:
@@ -266,15 +266,15 @@
      */
     function appendCouponTableCellContent(cellClass, coupon, cell) {
         switch (cellClass) {
-            case 'code':
+            case "code":
                 cell.innerText = coupon.couponID;
                 break;
             default:
                 if (coupon.freeItem) {
-                    cell.innerText = 'Free item ID: ' + coupon.freeItem.id;
+                    cell.innerText = "Free item ID: " + coupon.freeItem.id;
                 }
                 else {
-                    cell.innerText = 'Discount val: ' + coupon.discount;
+                    cell.innerText = "Discount val: " + coupon.discount;
                 }
         }
 
@@ -306,7 +306,7 @@
      */
     function popCouponCode() {
         var couponCode = couponInputField.value;
-        couponInputField.value = '';
+        couponInputField.value = "";
         return couponCode;
     }
 

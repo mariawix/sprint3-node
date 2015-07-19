@@ -1,12 +1,13 @@
+/*global view*/
 /*
  * Quantity Buttons Helpers
  */
 var quantityButtons = (function() {
-
-    var quantityBtnsContainerClass = 'item-amount',
-        itemAmountInputClass = 'amount',
-        addToCartBtnClass = 'add',
-        removeFromCartBtnClass = 'remove',
+    "use strict";
+    var quantityBtnsContainerClass = "item-amount",
+        itemAmountInputClass = "amount",
+        addToCartBtnClass = "add",
+        removeFromCartBtnClass = "remove",
 
         eventBus = app.eventBus;
 
@@ -16,8 +17,8 @@ var quantityButtons = (function() {
      * @returns {Element} the newly created button
      */
     function createAddBtn(data) {
-        var btn, btnAtts = {'className': addToCartBtnClass, 'innerText': 'Add'};
-        btn = view.createCustomElement('button', btnAtts);
+        var btn, btnAtts = {"className": addToCartBtnClass, "innerText": "Add"};
+        btn = view.createCustomElement("button", btnAtts);
         btn.onclick = function(e) {
             e.preventDefault();
             var amountAdded = parseInt(data.itemAmountElement.value, 10);
@@ -35,8 +36,8 @@ var quantityButtons = (function() {
      * @returns {Element} the newly created button
      */
     function createRemoveBtn(data) {
-        var btn, btnAtts = {'className': removeFromCartBtnClass, 'innerText': 'Remove'};
-        btn = view.createCustomElement('button', btnAtts);
+        var btn, btnAtts = {"className": removeFromCartBtnClass, "innerText": "Remove"};
+        btn = view.createCustomElement("button", btnAtts);
         btn.onclick = function(e) {
             e.preventDefault();
             var itemAmount = parseInt(data.itemAmountElement.value, 10);
@@ -54,12 +55,12 @@ var quantityButtons = (function() {
      * @returns {Element} the newly created button
      */
     function createItemAmountElement(item) {
-        var atts = {'className': itemAmountInputClass, 'value': 0},
+        var atts = {"className": itemAmountInputClass, "value": 0},
             itemAmountElement;
         if (item.quantity === 0) {
-            atts.disabled = 'true';
+            atts.disabled = "true";
         }
-        itemAmountElement = view.createCustomElement('input', atts);
+        itemAmountElement = view.createCustomElement("input", atts);
         eventBus.subscribe(eventBus.eventNames.resetItemAmount + item.id, function() {
             itemAmountElement.value = 0;
         });
@@ -70,7 +71,7 @@ var quantityButtons = (function() {
                 itemAmount = 0;
             }
             itemAmountElement.value = itemAmount;
-            eventBus.publish(eventBus.eventNames.setItemAmountInCart, {'item': item, 'amount': itemAmount});
+            eventBus.publish(eventBus.eventNames.setItemAmountInCart, {"item": item, "amount": itemAmount});
         };
         return itemAmountElement;
     }
@@ -82,10 +83,10 @@ var quantityButtons = (function() {
      */
     function appendQuantityBtns(parentElement, item) {
         var itemAmountElement, container, data;
-        container = view.appendChild(parentElement, 'span', {'className': quantityBtnsContainerClass});
+        container = view.appendChild(parentElement, "span", {"className": quantityBtnsContainerClass});
         itemAmountElement = createItemAmountElement(item);
         container.appendChild(itemAmountElement);
-        data = {"itemAmountElement": itemAmountElement, 'item': item};
+        data = {"itemAmountElement": itemAmountElement, "item": item};
         container.appendChild(createAddBtn(data));
         container.appendChild(createRemoveBtn(data));
     }

@@ -2,13 +2,14 @@
  * Loads catalogue module into the app
  */
 (function(app) {
-    var sortAscBtnClass = 'sort-asc-btn',
-        sortDescBtnClass = 'sort-desc-btn',
+    "use strict";
+    var sortAscBtnClass = "sort-asc-btn",
+        sortDescBtnClass = "sort-desc-btn",
 
         eventBus = app.eventBus,
 
-        tableElement = document.querySelector('.catalog'),
-        headers = ['id', 'name', 'description', 'image', 'price', 'cart'],
+        tableElement = document.querySelector(".catalog"),
+        headers = ["id", "name", "description", "image", "price", "cart"],
 
         itemRowElements = [];
 
@@ -68,11 +69,11 @@
      */
     function appendSortBtn(parentElement, key, asc) {
         var sortBtn, btnAtts, eventName;
-        if (key !== 'image' && key !== 'cart') {
+        if (key !== "image" && key !== "cart") {
             eventName = (asc) ? eventBus.eventNames.sortAscBtnClicked : eventBus.eventNames.sortDescBtnClicked;
-            btnAtts = (asc) ? {'innerHTML': '&uarr;', 'className': sortAscBtnClass}
-                            : {'innerHTML': '&darr;', 'className': sortDescBtnClass};
-            sortBtn = view.createCustomElement('span', btnAtts);
+            btnAtts = (asc) ? {"innerHTML": "&uarr;", "className": sortAscBtnClass}
+                            : {"innerHTML": "&darr;", "className": sortDescBtnClass};
+            sortBtn = view.createCustomElement("span", btnAtts);
             sortBtn.onclick = function () {
                 eventBus.publish(eventName, {key: key, asc: asc});
             };
@@ -87,17 +88,17 @@
      */
     function appendBodyCellContent(cellClass, item, cell) {
         switch (cellClass) {
-            case 'image':
-                view.appendChild(cell, 'img', {'src': item[cellClass], 'alt': 'image'});
+            case "image":
+                view.appendChild(cell, "img", {"src": item[cellClass], "alt": "image"});
                 break;
-            case 'cart':
+            case "cart":
                 quantityButtons.appendQuantityBtns(cell, item);
                 break;
-            case 'price':
+            case "price":
                 if (item.discount > 0) {
-                    view.appendChild(cell, 'span', {'innerText': item.price.toFixed(2), 'className': 'old-price'});
+                    view.appendChild(cell, "span", {"innerText": item.price.toFixed(2), "className": "old-price"});
                 }
-                view.appendChild(cell, 'span', {'innerText': ((item.price * (100 - item.discount)) / 100).toFixed(2), 'className': 'new-price'});
+                view.appendChild(cell, "span", {"innerText": ((item.price * (100 - item.discount)) / 100).toFixed(2), "className": "new-price"});
                 break;
             default :
                 cell.innerText = item[cellClass];
