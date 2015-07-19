@@ -19,33 +19,11 @@
     function init(itemsNmb) {
         subscribePaginationEventHandlers();
         loadPaginationBar(1, itemsNmb);
-        handlePagingSizeElement(itemsNmb);
+        handlePagingSizeChange(itemsNmb);
     }
-
-    /**
-     * Loads pagination bar.
-     * @param {Number} curPage index of the displayed page
-     * @param {Number} itemsNmb total number of items
-     */
-    function loadPaginationBar(curPage, itemsNmb) {
-        var pageNmb, btn, btnNmb,
-            pagingFragment = document.createDocumentFragment(),
-            pagingSizeValue = (pagingSizeElement.value < itemsNmb) ? pagingSizeElement.value : itemsNmb;
-        paginationListElement.innerHTML = "";
-        for (btnNmb = 0; btnNmb < paginationListElement.childNodes.length; btnNmb++) {
-            paginationListElement.childNodes[btnNmb].onclick = undefined;
-        }
-        for (pageNmb = 1; (pageNmb - 1) * pagingSizeValue < itemsNmb; pageNmb++) {
-            btn = createPageBtnElement(pageNmb === curPage, pageNmb, pagingSizeValue);
-            pagingFragment.appendChild(btn);
-            pageBtnHandler(btn);
-        }
-        paginationListElement.appendChild(pagingFragment);
-    }
-
 
     /**************************************************************************************************
-     *                                          Pagination UI Manipulations
+     *                                          UI Manipulations
      **************************************************************************************************/
     /**
      * Subscribes all pagination related event handlers to the pubsub.
@@ -65,7 +43,7 @@
      * Handles paging size change event.
      * @param {Number} itemsNmb total number of items
      */
-    function handlePagingSizeElement(itemsNmb) {
+    function handlePagingSizeChange(itemsNmb) {
         pagingSizeElement.onchange = function () {
             eventBus.publish(eventBus.eventNames.pagingSizeChanged, getPagingSize());
             loadPaginationBar(getCurPageNmb(), itemsNmb);
@@ -76,7 +54,7 @@
      * Handles page button click event.
      * @param {Element} pageBtnElement a page button element
      */
-    function pageBtnHandler(pageBtnElement) {
+    function handlePageBtnClick(pageBtnElement) {
         pageBtnElement.onclick = function () {
             var data = JSON.parse(pageBtnElement.dataset.paging), clickedPage, clickedPageNmb;
             clickedPage = view.getElementByClassName(pageBtnElement, pageLinkClass);
@@ -87,7 +65,7 @@
     }
 
     /**************************************************************************************************
-     *                                          Pagination DOM Helpers
+     *                                           DOM Helpers
      **************************************************************************************************/
     /**
      * Returns number of the currently displayed page.
@@ -130,6 +108,27 @@
         btn = view.createCustomElement('li', pageItemAtts);
         view.appendChild(btn, 'span', {'className': pageLinkClass, 'innerText': pageIndex});
         return btn;
+    }
+
+    /**
+     * Loads pagination bar.
+     * @param {Number} curPage index of the displayed page
+     * @param {Number} itemsNmb total number of items
+     */
+    function loadPaginationBar(curPage, itemsNmb) {
+        var pageNmb, btn, btnNmb,
+            pagingFragment = document.createDocumentFragment(),
+            pagingSizeValue = (pagingSizeElement.value < itemsNmb) ? pagingSizeElement.value : itemsNmb;
+        paginationListElement.innerHTML = "";
+        for (btnNmb = 0; btnNmb < paginationListElement.childNodes.length; btnNmb++) {
+            paginationListElement.childNodes[btnNmb].onclick = undefined;
+        }
+        for (pageNmb = 1; (pageNmb - 1) * pagingSizeValue < itemsNmb; pageNmb++) {
+            btn = createPageBtnElement(pageNmb === curPage, pageNmb, pagingSizeValue);
+            pagingFragment.appendChild(btn);
+            handlePageBtnClick(btn);
+        }
+        paginationListElement.appendChild(pagingFragment);
     }
 
     app.pagination = {

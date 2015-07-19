@@ -1,7 +1,7 @@
 /*
  * Loads cart module into the app.
  */
-(function(app) {
+(function (app) {
     'use strict';
     var eventBus = app.eventBus,
 
@@ -23,6 +23,7 @@
         }
         return itemClone;
     }
+
     /**
      * Sets number of items added to the cart to the specified value.
      * @param {Object} data object {item: item, amount: amount}.
@@ -92,6 +93,7 @@
         totalBill = totalBill.toFixed(2);
         setTotalBillValue(totalBill);
     }
+
     /**
      * Refreshes the cart after an update.
      */
@@ -102,7 +104,7 @@
                 items.push(addedItems[id]);
             }
         }
-        reloadCartTable(items);
+        reloadItemsTable(items);
         reloadCouponTable();
         refreshTotalBill();
     }
@@ -119,6 +121,7 @@
         }
         return discount;
     }
+
     /**
      * Returns item price after discount.
      * @param {Item} item an item instance
@@ -140,6 +143,7 @@
             }
         }
     }
+
     /**
      * Validates coupon submitted by user and updates the cart accordingly.
      */
@@ -148,7 +152,7 @@
         couponCode = popCouponCode();
         if (getCouponByID(couponCode))
             return;
-        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function(coupon) {
+        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
             if (coupon !== '') {
                 addedCoupons.push(coupon);
                 if (coupon.discount) {
@@ -163,20 +167,8 @@
         });
     }
 
-    /**
-     * Initializes the cart.
-     */
-    function init(couponsData) {
-        initTables();
-        addEventListeners();
-    }
-
-    app.cart = {
-        init: init
-    };
-
     /**************************************************************************************************
-     *                                              Cart UI Manipulations
+     *                                               UI Manipulations
      **************************************************************************************************/
     var couponSubmitBtn = document.querySelector('.coupon-submit-btn'),
         resetCartBtn = document.querySelector('.reset-cart-btn'),
@@ -187,20 +179,20 @@
      * Adds all cart event handlers.
      */
     function addEventListeners() {
-        hideCartBtn.addEventListener('click', function(e) {
+        hideCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             hideCart();
         });
-        resetCartBtn.addEventListener('click', function(e) {
+        resetCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             resetCart();
         });
-        viewCartBtn.addEventListener('click', function(e) {
+        viewCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             exposeCart();
             refreshCart();
         });
-        couponSubmitBtn.addEventListener('click', function(e) {
+        couponSubmitBtn.addEventListener('click', function (e) {
             e.preventDefault();
             addCoupon();
         });
@@ -211,7 +203,7 @@
     }
 
     /**************************************************************************************************
-     *                                              Cart DOM Helpers
+     *                                              DOM Helpers
      **************************************************************************************************/
     var couponInputField = document.querySelector('.coupon-input'),
         couponInputContainer = document.querySelector('.coupon-input-container'),
@@ -231,20 +223,21 @@
     }
 
     /**
-     * Reloads the cart table.
+     * Reloads items table.
      * @param {Array} items items added to the cart so far.
      */
-    function reloadCartTable(items) {
-        var rows = view.createRowElements(items, itemsTableHeaders, appendCartTableCellContent);
+    function reloadItemsTable(items) {
+        var rows = view.createRowElements(items, itemsTableHeaders, appendItemsTableCellContent);
         view.loadRows(itemsTableElement, rows, 0, items.length);
     }
+
     /**
      * Appends a content to the given cart table cell.
      * @param {String} cellClass class name of the cell to append content to
      * @param {Object} item an item object corresponding to this cell
      * @param {Element} cell an element corresponding to that item
      */
-    function appendCartTableCellContent(cellClass, item, cell) {
+    function appendItemsTableCellContent(cellClass, item, cell) {
         switch (cellClass) {
             case 'total':
                 cell.innerText = String((getItemPrice(item) * item.amount).toFixed(2));
@@ -256,6 +249,7 @@
                 cell.innerText = item[cellClass];
         }
     }
+
     /**
      * Reloads the coupon table.
      */
@@ -263,6 +257,7 @@
         var rows = view.createRowElements(addedCoupons, couponTableHeaders, appendCouponTableCellContent);
         view.loadRows(couponTableElement, rows, 0, addedCoupons.length);
     }
+
     /**
      * Appends a content to the given coupon table cell.
      * @param {String} cellClass class name of the cell to append content to
@@ -306,7 +301,7 @@
     }
 
     /**
-     * Returns coupon code entered by user and clears coupon enter field.
+     * Returns coupon code entered by user and resets coupon input field.
      * @returns {String} coupon code
      */
     function popCouponCode() {
@@ -314,6 +309,7 @@
         couponInputField.value = '';
         return couponCode;
     }
+
     /**
      * Returns total bill value.
      * @returns {Number} total bill.
@@ -324,10 +320,17 @@
 
     /**
      * Sets total bill value
-     * @param value new value
+     * @param {Number} value new value
      */
     function setTotalBillValue(value) {
         totalBillElement.value = value;
     }
+
+    app.cart = {
+        init: function (couponsData) {
+            initTables();
+            addEventListeners();
+        }
+    };
 
 }(app));

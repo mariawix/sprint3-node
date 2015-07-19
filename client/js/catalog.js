@@ -34,20 +34,6 @@
     }
 
     /**
-     * Updates catalogue on paging size change.
-     * @param {Number} pagingSize new paging size
-     */
-    function handlePagingSizeChange(pagingSize) {
-        var firstIndex, newCurPage, topRow, topRowIndex;
-        topRow = view.getFirstBodyRow(tableElement);
-        topRowIndex = parseInt(topRow.dataset.index, 10);
-        newCurPage = Math.floor(topRowIndex / pagingSize) + 1;
-        firstIndex = (newCurPage - 1) * pagingSize;
-        loadItems(firstIndex, firstIndex + pagingSize);
-        eventBus.publish(eventBus.eventNames.curPageChanged, newCurPage);
-    }
-
-    /**
      * Sorts item row elements
      * @param {Object} data object of the form {asc: Boolean}, if true - then sorts in ascending order, otherwise - descending
      */
@@ -62,8 +48,9 @@
         reindexItemRowElements();
         eventBus.publish(eventBus.eventNames.reloadPagination, {});
     }
+
     /**************************************************************************************************
-     *                                          Catalogue DOM Helpers
+     *                                          DOM Helpers
      **************************************************************************************************/
     /**
      * Loads items with indices [firstIndex, endIndex - 1] to the table.
@@ -117,8 +104,21 @@
         }
     }
     /**************************************************************************************************
-     *                                         Catalogue UI Manipulations
+     *                                          UI Manipulations
      **************************************************************************************************/
+    /**
+     * Updates catalogue on paging size change.
+     * @param {Number} pagingSize new paging size
+     */
+    function handlePagingSizeChange(pagingSize) {
+        var firstIndex, newCurPage, topRow, topRowIndex;
+        topRow = view.getFirstBodyRow(tableElement);
+        topRowIndex = parseInt(topRow.dataset.index, 10);
+        newCurPage = Math.floor(topRowIndex / pagingSize) + 1;
+        firstIndex = (newCurPage - 1) * pagingSize;
+        loadItems(firstIndex, firstIndex + pagingSize);
+        eventBus.publish(eventBus.eventNames.curPageChanged, newCurPage);
+    }
     /**
      * Subscribes catalogue event handlers to the event bus.
      */
