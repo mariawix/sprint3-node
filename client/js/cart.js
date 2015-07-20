@@ -1,11 +1,12 @@
+/*eslint guard-for-in: 1 */
 /*
  * Loads cart module into the app.
  */
 (function (app) {
-    "use strict";
+    'use strict';
     var eventBus = app.eventBus,
 
-        itemsTableHeaders = ["id", "name", "price", "amount", "discount", "total"],
+        itemsTableHeaders = ['id', 'name', 'price', 'amount', 'discount', 'total'],
         couponDiscount = 0,
         addedCoupons = [],
         addedItems = {};
@@ -34,8 +35,7 @@
             itemClone = getItemClone(item);
             itemClone.amount = amount;
             addedItems[item.id] = itemClone;
-        }
-        else {
+        } else {
             setTotalBillValue(getTotalBillValue() - getItemPrice(item) * addedItems[item.id].amount);
         }
         setTotalBillValue(getTotalBillValue() + getItemPrice(item) * amount);
@@ -138,7 +138,8 @@
      */
     function getCouponByID(couponCode) {
         for (var i = 0; i < addedCoupons.length; i++) {
-            if (addedCoupons[i].couponID == couponCode) {
+            // TODO: remove String
+            if (String(addedCoupons[i].couponID) === String(couponCode)) {
                 return addedCoupons[i];
             }
         }
@@ -148,51 +149,50 @@
      * Validates coupon submitted by user and updates the cart accordingly.
      */
     function addCoupon() {
-        var couponCode, coupon;
+        var couponCode;
         couponCode = popCouponCode();
-        if (getCouponByID(couponCode))
-            return;
-        app.sendRequest("GET", "/getCouponByID", "couponID=" + couponCode, function (coupon) {
-            if (coupon !== "") {
-                addedCoupons.push(coupon);
-                if (coupon.discount) {
-                    couponDiscount += coupon.discount;
-                    couponDiscount = (couponDiscount > 100) ? 100 : couponDiscount;
+        if (!getCouponByID(couponCode)) {
+            app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
+                if (coupon !== '') {
+                    addedCoupons.push(coupon);
+                    if (coupon.discount) {
+                        couponDiscount += coupon.discount;
+                        couponDiscount = (couponDiscount > 100) ? 100 : couponDiscount;
+                    } else {
+                        addItemToCart({item: coupon.freeItem});
+                    }
                 }
-                else {
-                    addItemToCart({item: coupon.freeItem});
-                }
-            }
-            refreshCart();
-        });
+                refreshCart();
+            });
+        }
     }
 
     /**************************************************************************************************
      *                                               UI Manipulations
      **************************************************************************************************/
-    var couponSubmitBtn = document.querySelector(".coupon-submit-btn"),
-        resetCartBtn = document.querySelector(".reset-cart-btn"),
-        viewCartBtn = document.querySelector(".view-cart-btn"),
-        hideCartBtn = document.querySelector(".hide-cart-btn");
+    var couponSubmitBtn = document.querySelector('.coupon-submit-btn'),
+        resetCartBtn = document.querySelector('.reset-cart-btn'),
+        viewCartBtn = document.querySelector('.view-cart-btn'),
+        hideCartBtn = document.querySelector('.hide-cart-btn');
 
     /**
      * Adds all cart event handlers.
      */
     function addEventListeners() {
-        hideCartBtn.addEventListener("click", function (e) {
+        hideCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             hideCart();
         });
-        resetCartBtn.addEventListener("click", function (e) {
+        resetCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             resetCart();
         });
-        viewCartBtn.addEventListener("click", function (e) {
+        viewCartBtn.addEventListener('click', function (e) {
             e.preventDefault();
             exposeCart();
             refreshCart();
         });
-        couponSubmitBtn.addEventListener("click", function (e) {
+        couponSubmitBtn.addEventListener('click', function (e) {
             e.preventDefault();
             addCoupon();
         });
@@ -205,14 +205,14 @@
     /**************************************************************************************************
      *                                              DOM Helpers
      **************************************************************************************************/
-    var couponInputField = document.querySelector(".coupon-input"),
-        couponInputContainer = document.querySelector(".coupon-input-container"),
-        cartDetails = document.querySelector(".cart-details"),
-        itemsTableElement = document.querySelector(".cart-table"),
-        couponTableElement = document.querySelector(".coupon-table"),
-        totalBillElement = document.querySelector(".total-bill"),
+    var couponInputField = document.querySelector('.coupon-input'),
+        couponInputContainer = document.querySelector('.coupon-input-container'),
+        cartDetails = document.querySelector('.cart-details'),
+        itemsTableElement = document.querySelector('.cart-table'),
+        couponTableElement = document.querySelector('.coupon-table'),
+        totalBillElement = document.querySelector('.total-bill'),
 
-        couponTableHeaders = ["code", "details"];
+        couponTableHeaders = ['code', 'details'];
 
     /**
      * Initializes cart tables.
@@ -239,10 +239,10 @@
      */
     function appendItemsTableCellContent(cellClass, item, cell) {
         switch (cellClass) {
-            case "total":
+            case 'total':
                 cell.innerText = String((getItemPrice(item) * item.amount).toFixed(2));
                 break;
-            case "discount":
+            case 'discount':
                 cell.innerText = getDiscount(item);
                 break;
             default:
@@ -266,15 +266,14 @@
      */
     function appendCouponTableCellContent(cellClass, coupon, cell) {
         switch (cellClass) {
-            case "code":
+            case 'code':
                 cell.innerText = coupon.couponID;
                 break;
             default:
                 if (coupon.freeItem) {
-                    cell.innerText = "Free item ID: " + coupon.freeItem.id;
-                }
-                else {
-                    cell.innerText = "Discount val: " + coupon.discount;
+                    cell.innerText = 'Free item ID: ' + coupon.freeItem.id;
+                } else {
+                    cell.innerText = 'Discount val: ' + coupon.discount;
                 }
         }
 
@@ -296,7 +295,7 @@
         view.hideElements([viewCartBtn]);
     }
 
-    function appendSortBtn(parentElement, key, asc) {
+    function appendSortBtn() {
         // not supported
     }
 
@@ -306,7 +305,7 @@
      */
     function popCouponCode() {
         var couponCode = couponInputField.value;
-        couponInputField.value = "";
+        couponInputField.value = '';
         return couponCode;
     }
 
@@ -327,7 +326,7 @@
     }
 
     app.cart = {
-        init: function (couponsData) {
+        init: function () {
             initTables();
             addEventListeners();
         }

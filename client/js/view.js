@@ -1,14 +1,16 @@
+/*eslint wrap-iife: [1, "outside"] */
+/*eslint guard-for-in: 1 */
 /**
  * Common DOM helpers.
  */
-var view = (function () {
-    "use strict";
-    var hiddenElementClass = "visuallyhidden",
-        tableHeadCellClass = "th",
-        tableBodyCellClass = "td",
-        tableHeadClass = "thead",
-        tableBodyClass = "tbody",
-        tableRowClass = "tr";
+view = (function () {
+    'use strict';
+    var hiddenElementClass = 'visuallyhidden',
+        tableHeadCellClass = 'th',
+        tableBodyCellClass = 'td',
+        tableHeadClass = 'thead',
+        tableBodyClass = 'tbody',
+        tableRowClass = 'tr';
 
     /**
      * Creates a new element with the given tag name and attributes.
@@ -19,12 +21,11 @@ var view = (function () {
     function createCustomElement(tagName, attributes) {
         var element = document.createElement(tagName), attKey, objKey;
         for (attKey in attributes) {
-            if ((typeof attributes[attKey]) === "object") {
+            if ((typeof attributes[attKey]) === 'object') {
                 for (objKey in attributes[attKey]) {
                     element[attKey][objKey] = attributes[attKey][objKey];
                 }
-            }
-            else {
+            } else {
                 element[attKey] = attributes[attKey];
             }
         }
@@ -53,7 +54,7 @@ var view = (function () {
      * @returns {Element} child element if found, undefined - otherwise
      */
     function getElementByClassName(parentElement, className) {
-        return parentElement.querySelector("." + className);
+        return parentElement.querySelector('.' + className);
     }
 
     /**
@@ -63,7 +64,7 @@ var view = (function () {
      * @param {Function} appendSortBtns a callback function appending sort buttons to header cells
      */
     function loadTableHead(tableElement, headerContent, appendSortBtns) {
-        var row = createCustomElement("div", {"className": tableRowClass}),
+        var row = createCustomElement('div', {'className': tableRowClass}),
             tableHeadElement = getElementByClassName(tableElement, tableHeadClass);
 
         /**
@@ -73,10 +74,10 @@ var view = (function () {
         function appendHeaderCell(content) {
             var headerCell,
                 headerCellAttributes = {
-                    "innerText": content,
-                    "className": tableHeadCellClass + " " + tableHeadCellClass + "-" + content
+                    'innerText': content,
+                    'className': tableHeadCellClass + ' ' + tableHeadCellClass + '-' + content
                 };
-            headerCell = appendChild(row, "div", headerCellAttributes);
+            headerCell = appendChild(row, 'div', headerCellAttributes);
             appendSortBtns(headerCell, content, true);
             appendSortBtns(headerCell, content, false);
         }
@@ -98,7 +99,7 @@ var view = (function () {
     function loadRows(tableElement, rows, firstIndex, endIndex) {
         var rowIndex, tableBodyElement = getElementByClassName(tableElement, tableBodyClass);
         endIndex = (endIndex < rows.length) ? endIndex : rows.length;
-        tableBodyElement.innerHTML = "";
+        tableBodyElement.innerHTML = '';
         for (rowIndex = firstIndex; rowIndex < endIndex; rowIndex++) {
             tableBodyElement.appendChild(rows[rowIndex]);
         }
@@ -124,7 +125,7 @@ var view = (function () {
      */
     function getFirstBodyRow(tableElement) {
         var tableBodyElement = getElementByClassName(tableElement, tableBodyClass);
-        return getElementByClassName(tableBodyElement, tableRowClass + ":first-child");
+        return getElementByClassName(tableBodyElement, tableRowClass + ':first-child');
     }
 
     /**
@@ -142,11 +143,11 @@ var view = (function () {
          * @param {Number} index row index
          */
         function createRowElement(obj, index) {
-            var rowElementClass = tableRowClass + " " + tableRowClass + "-" + obj.type,
-                rowElement = createCustomElement("div", {"className": rowElementClass, "dataset": {"index": index}});
+            var rowElementClass = tableRowClass + ' ' + tableRowClass + '-' + obj.type,
+                rowElement = createCustomElement('div', {'className': rowElementClass, 'dataset': {'index': index}});
             keys.forEach(function (key) {
-                var className = key + " " + tableBodyCellClass,
-                    cell = appendChild(rowElement, "div", {"className": className});
+                var className = key + ' ' + tableBodyCellClass,
+                    cell = appendChild(rowElement, 'div', {'className': className});
                 appendCellContent(key, obj, cell);
             });
             return rowElement;

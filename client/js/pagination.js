@@ -2,15 +2,15 @@
  * Loads pagination module into the app.
  */
 (function (app) {
-    "use strict";
-    var pageBtnClass = "page-btn",
-        curPageBtnClass = "current-page-btn",
-        pageLinkClass = "page-link",
+    'use strict';
+    var pageBtnClass = 'page-btn',
+        curPageBtnClass = 'current-page-btn',
+        pageLinkClass = 'page-link',
 
         eventBus = app.eventBus,
 
-        paginationListElement = document.querySelector(".pagination-list"),
-        pagingSizeElement = document.querySelector(".paging-size");
+        paginationListElement = document.querySelector('.pagination-list'),
+        pagingSizeElement = document.querySelector('.paging-size');
 
     /**
      * Initializes pagination module.
@@ -31,7 +31,7 @@
     function subscribePaginationEventHandlers() {
         eventBus.subscribe(eventBus.eventNames.curPageChanged, function (curPageNmb) {
             view.getElementByClassName(paginationListElement, curPageBtnClass).classList.remove(curPageBtnClass);
-            view.getElementByClassName(paginationListElement, pageBtnClass + ":nth-child(" + curPageNmb + ")").classList.add(curPageBtnClass);
+            view.getElementByClassName(paginationListElement, pageBtnClass + ':nth-child(' + curPageNmb + ')').classList.add(curPageBtnClass);
         });
 
         eventBus.subscribe(eventBus.eventNames.reloadPagination, function() {
@@ -99,14 +99,14 @@
             pageItemAtts, className, btn;
         className = pageBtnClass;
         if (curPage) {
-            className += " " + curPageBtnClass;
+            className += ' ' + curPageBtnClass;
         }
         pageItemAtts = {
-            "className": className,
-            "dataset": { "paging": "{\"start\": " + firstItemIndex + ", \"end\": " + endItemIndex + "}" }
+            'className': className,
+            'dataset': { 'paging': '{"start": ' + firstItemIndex + ', "end": ' + endItemIndex + '}' }
         };
-        btn = view.createCustomElement("li", pageItemAtts);
-        view.appendChild(btn, "span", {"className": pageLinkClass, "innerText": pageIndex});
+        btn = view.createCustomElement('li', pageItemAtts);
+        view.appendChild(btn, 'span', {'className': pageLinkClass, 'innerText': pageIndex});
         return btn;
     }
 
@@ -119,7 +119,7 @@
         var pageNmb, btn, btnNmb,
             pagingFragment = document.createDocumentFragment(),
             pagingSizeValue = (pagingSizeElement.value < itemsNmb) ? pagingSizeElement.value : itemsNmb;
-        paginationListElement.innerHTML = "";
+        paginationListElement.innerHTML = '';
         for (btnNmb = 0; btnNmb < paginationListElement.childNodes.length; btnNmb++) {
             paginationListElement.childNodes[btnNmb].onclick = undefined;
         }

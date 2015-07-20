@@ -1,7 +1,9 @@
+/*eslint wrap-iife: [1, "outside"] */
 /**
  * Database
  */
-module.exports = (function() {
+module.exports = (function () {
+    'use strict';
     var itemsDB, couponsDB, root = './data';
 
     /*******************************************************************************************************************
@@ -25,10 +27,10 @@ module.exports = (function() {
         for (var i = 0; i < couponsDB.couponsNum; i++) {
             if (couponsDB.coupons[i].getID() === couponID) {
                 coupon = couponsDB.coupons[i];
-                if (coupon instanceof couponsDB.couponClasses.DiscountCoupon)
+                if (coupon instanceof couponsDB.couponClasses.DiscountCoupon) {
                     return {couponID: coupon.getID(), discount: coupon.getDiscountValue()};
-                else
-                    return {couponID: coupon.getID(), freeItem: coupon.getFreeItem()};
+                }
+                return {couponID: coupon.getID(), freeItem: coupon.getFreeItem()};
             }
         }
     }
@@ -46,21 +48,18 @@ module.exports = (function() {
      * @param {itemIDs: Array, itemAmount: Array} itemsData
      * @param {Array} couponsData
      * @returns {Boolean} true if the transaction succeeds, false - otherwise
-     */
-    function transact(itemsData, couponIDs) {
+     function transact(itemsData, couponIDs) {
         var item, i;
         for (i = 0; i < itemsData.itemIDs.length; i++) {
             // ...
             // ...
             // ...
             item = getItemByID(itemsData.itemIDs[i]);
-            if (item)
-                item.quantity -= itemsData.itemAmount[i];
-            else
-                return false;
+            return (item) ? item.quantity -= itemsData.itemAmount[i] : false;
         }
         return true;
     }
+     */
 
     /**
      * Returns item by ID.
@@ -74,6 +73,7 @@ module.exports = (function() {
             }
         }
     }
+
     /*******************************************************************************************************************
      *                                                      Helpers
      ******************************************************************************************************************/
@@ -106,7 +106,8 @@ module.exports = (function() {
      */
     function initItems(itemObjects) {
         var keys = ['id', 'name', 'description', 'image', 'price', 'type', 'quantity', 'discount'],
-            compoundItems = [];
+            compoundItems = [], num, compoundItem, itemConstructors = [Item, OnSaleItem, OutOfStockItem];
+
         /**
          * Base item: random quantity, no discount.
          * @param {Object} itemProperties object specifying item properties: id, name, description etc.
@@ -115,7 +116,7 @@ module.exports = (function() {
         function Item(itemProperties) {
             var properties = {}, i;
             for (i = 0; i < keys.length; i++) {
-                properties[keys[i]] = { configurable: false, enumerable: true, writable: false };
+                properties[keys[i]] = {configurable: false, enumerable: true, writable: false};
                 properties[keys[i]].value = itemProperties[keys[i]];
             }
             properties.quantity.writable = true;
@@ -128,7 +129,7 @@ module.exports = (function() {
          * @constructor
          */
         function OnSaleItem(itemProperties) {
-            itemProperties.image = "/img/sale-item.ico";
+            itemProperties.image = '/img/sale-item.ico';
             itemProperties.type = 'sale';
             itemProperties.quantity = getRandomNum(1, 9, 1);
             itemProperties.discount = getRandomNum(1, 7, 10);
@@ -141,40 +142,39 @@ module.exports = (function() {
          * @constructor
          */
         function OutOfStockItem(itemProperties) {
-            itemProperties.image = "/img/out-of-stock-item.ico";
+            itemProperties.image = '/img/out-of-stock-item.ico';
             itemProperties.type = 'out';
             itemProperties.quantity = 0;
             itemProperties.discount = 0;
             Item.call(this, itemProperties);
         }
 
-        (function () {
-            var num, compoundItem, itemConstructors = [Item, OnSaleItem, OutOfStockItem];
-            itemObjects.forEach(function (item) {
-                num = getRandomNum(0, itemConstructors.length, 1);
-                if (itemConstructors[num] === Item) {
-                    item.image = "/img/base-item.ico";
-                    item.type = 'base';
-                    item.quantity = getRandomNum(1, 5, 1);
-                    item.discount = 0;
-                }
-                compoundItem = new itemConstructors[num](item);
-                compoundItems.push(compoundItem);
-            });
-        })();
+        itemObjects.forEach(function (item) {
+            num = getRandomNum(0, itemConstructors.length, 1);
+            if (itemConstructors[num] === Item) {
+                item.image = '/img/base-item.ico';
+                item.type = 'base';
+                item.quantity = getRandomNum(1, 5, 1);
+                item.discount = 0;
+            }
+            compoundItem = new itemConstructors[num](item);
+            compoundItems.push(compoundItem);
+        });
 
         return {
             items: compoundItems,
             itemsNum: compoundItems.length
         };
     }
+
     /**
      * Creates coupons from given json objects.
      * @param {Object} couponObjects coupon json objects
      * @returns {{coupons: Array, couponClasses: {Coupon: Coupon, FreeItemCoupon: FreeItemCoupon, DiscountCoupon: DiscountCoupon}}}
      */
     function initCoupons(couponObjects, items) {
-        var coupons = [];
+        var coupons = [], coupon, code, i;
+
         /**
          * Base class.
          * @param {String} id coupon code
@@ -186,6 +186,7 @@ module.exports = (function() {
                 return _id;
             };
         }
+
         /**
          * Free item coupon: gives an item with discount 100
          * @param {Object} item free item
@@ -198,8 +199,9 @@ module.exports = (function() {
             _itemClone.discount = 100;
             this.getFreeItem = function () {
                 return _itemClone;
-            }
+            };
         }
+
         /**
          * Discount coupon: adds a discount to each item in the cart
          * @param {Number} discountValue discount (percent) added to each item
@@ -214,50 +216,43 @@ module.exports = (function() {
             };
         }
 
-        (function () {
-            var num, coupon, code, i;
-
-            /**
-             * Generates a random coupon code of given length.
-             */
-            function getRandomCode() {
-                var i, code = '';
-                for (i = 0; i < 5; i++) {
-                    code += getRandomNum(0, 9, 1);
-                }
-                return code;
+        /**
+         * Generates a random coupon code of given length.
+         */
+        function getRandomCode() {
+            var j, str = '';
+            for (j = 0; j < 5; j++) {
+                str += getRandomNum(0, 9, 1);
             }
+            return str;
+        }
 
-            DiscountCoupon.prototype = Object.create(Coupon);
-            DiscountCoupon.prototype.constructor = DiscountCoupon;
+        DiscountCoupon.prototype = Object.create(Coupon);
+        DiscountCoupon.prototype.constructor = DiscountCoupon;
 
-            FreeItemCoupon.prototype = Object.create(Coupon);
-            FreeItemCoupon.prototype.constructor = FreeItemCoupon;
+        FreeItemCoupon.prototype = Object.create(Coupon);
+        FreeItemCoupon.prototype.constructor = FreeItemCoupon;
 
-            for (i = 0; i < couponObjects.length; i++) {
-                code = getRandomCode();
-                console.log(code);
-                if (i % 2 === 0) {
-                    coupon = new DiscountCoupon(getRandomNum(1, 7, 10), code);
-                }
-                else {
-                    coupon = new FreeItemCoupon(items[getRandomNum(0, items.length, 1)], code);
-                }
-                coupons.push(coupon);
-            }
-        })();
+        for (i = 0; i < couponObjects.length; i++) {
+            code = getRandomCode();
+            console.log(code);
+            coupon = (i % 2 === 0) ? new DiscountCoupon(getRandomNum(1, 7, 10), code) : new FreeItemCoupon(items[getRandomNum(0, items.length, 1)], code);
+            coupons.push(coupon);
+        }
+
 
         return {
             couponsNum: coupons.length,
             couponClasses: {Coupon: Coupon, DiscountCoupon: DiscountCoupon, FreeItemCoupon: FreeItemCoupon},
             coupons: coupons
-        }
+        };
     }
+
     return {
         init: init,
         getCouponByID: getCouponByID,
         getItems: getItems,
-        getItemByID: getItemByID,
-        transact: transact
+        //transact: transact,
+        getItemByID: getItemByID
     };
 })();

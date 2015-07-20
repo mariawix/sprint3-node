@@ -1,11 +1,12 @@
+/*eslint wrap-iife: [1, "outside"] */
 /**
  * Server
  */
 (function () {
-    "use strict";
-    var PORT = 3000, HOST = "localhost", ROOT = "./client",
-        http = require("http"), fs = require("fs"), db = require("./db/db"),
-        url = require("url"), querystring = require("querystring");
+    'use strict';
+    var PORT = 3000, HOST = 'localhost', ROOT = './client',
+        http = require('http'), fs = require('fs'), db = require('./db/db'),
+        url = require('url'), querystring = require('querystring');
 
     /*******************************************************************************************************************
      *                                                      Helpers
@@ -33,19 +34,19 @@
      */
     function getContentType(filename) {
         var pathLen = filename.length;
-        if (filename.indexOf(".js", pathLen - 3) > 0) {
-            return "text/javascript";
+        if (filename.indexOf('.js', pathLen - 3) > 0) {
+            return 'text/javascript';
         }
-        if (filename.indexOf(".css", pathLen - 4) > 0) {
-            return "text/css";
+        if (filename.indexOf('.css', pathLen - 4) > 0) {
+            return 'text/css';
         }
-        if (filename.indexOf(".ico", pathLen - 4) > 0) {
-            return "image/x-icon";
+        if (filename.indexOf('.ico', pathLen - 4) > 0) {
+            return 'image/x-icon';
         }
-        if (filename.indexOf(".html", pathLen - 5) > 0) {
-            return "text/html";
+        if (filename.indexOf('.html', pathLen - 5) > 0) {
+            return 'text/html';
         }
-        return "text/plain";
+        return 'text/plain';
     }
 
     /**
@@ -55,13 +56,13 @@
      */
     function sendFile(filename, res) {
         var fileName, contentType;
-        if (filename === "/") {
-            filename = "/index.html";
+        if (filename === '/') {
+            filename = '/index.html';
         }
         fileName = ROOT + filename;
         contentType = getContentType(filename);
         fs.readFile(fileName, function (err, data) {
-            res.setHeader("content-type", contentType + "; charset=utf-8");
+            res.setHeader('content-type', contentType + '; charset=utf-8');
             sendResponse(err, data, res);
         });
     }
@@ -75,27 +76,29 @@
         var uri = url.parse(req.url), method = req.method,
             pars = querystring.parse(uri.query), pathname = uri.pathname;
         switch (pathname) {
-            case "/getItems":
-                if (method === "GET") {
-                    sendResponse("", JSON.stringify(db.getItems()), res);
+            case '/getItems':
+                if (method === 'GET') {
+                    sendResponse('', JSON.stringify(db.getItems()), res);
                 }
                 break;
-            case "/getCouponByID":
-                if (method === "GET") {
-                    sendResponse("", JSON.stringify(db.getCouponByID(pars.couponID)), res);
+            case '/getCouponByID':
+                if (method === 'GET') {
+                    sendResponse('', JSON.stringify(db.getCouponByID(pars.couponID)), res);
                 }
                 break;
-            case "/transact":
-                if (method === "POST") {
-                    sendResponse("", JSON.stringify(db.transact(pars.itemsData, pars.couponIDs)), res);
+            /*
+            case '/transact':
+                if (method === 'POST') {
+                    sendResponse('', JSON.stringify(db.transact(pars.itemsData, pars.couponIDs)), res);
                 }
                 break;
+            */
             default:
-                if (method === "GET") {
+                if (method === 'GET') {
                     sendFile(pathname, res);
                 }
         }
     }).listen(PORT, HOST);
 
-    //console.log("Server running at " + HOST + ":" + PORT);
+    //console.log('Server running at ' + HOST + ':' + PORT);
 })();

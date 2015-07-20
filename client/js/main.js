@@ -1,18 +1,18 @@
 (function (app) {
-    "use strict";
+    'use strict';
 
-    app.sendRequest = function(method, path, query, callback) {
+    app.sendRequest = function (method, path, query, callback) {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
-            var responseText = "";
+            var responseText = '';
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                if (xmlhttp.responseText !== "") {
+                if (xmlhttp.responseText !== '') {
                     responseText = JSON.parse(xmlhttp.responseText);
                 }
                 callback(responseText);
             }
         };
-        xmlhttp.open(method, path + "?" + query, true);
+        xmlhttp.open(method, path + '?' + query, true);
         xmlhttp.send();
     };
 
@@ -32,21 +32,20 @@
      * Adds event listener to switch theme button click event.
      */
     function handleSwitchThemeButton() {
-        var switchThemeBtn = document.querySelector(".switch-theme-btn"),
-            body = document.querySelector("body");
+        var switchThemeBtn = document.querySelector('.switch-theme-btn'),
+            body = document.querySelector('body');
         switchThemeBtn.onclick = function (e) {
             e.preventDefault();
-            if (body.classList.contains("default-theme")) {
-                body.classList.remove("default-theme");
-                body.classList.add("green-theme");
-            }
-            else {
-                body.classList.add("default-theme");
-                body.classList.remove("green-theme");
+            if (body.classList.contains('default-theme')) {
+                body.classList.remove('default-theme');
+                body.classList.add('green-theme');
+            } else {
+                body.classList.add('default-theme');
+                body.classList.remove('green-theme');
             }
         };
     }
 
-    app.sendRequest("GET", "/getItems", "", run);
+    app.sendRequest('GET', '/getItems', '', run);
 
 }(app));

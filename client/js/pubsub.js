@@ -2,7 +2,7 @@
  * Event manager used for communication between modules.
  */
 (function PubSub(app) {
-    "use strict";
+    'use strict';
     var events = {};
 
     /**
@@ -40,20 +40,20 @@
 
         eventNames: {
             // publisher: pagination
-            pagingSizeChanged: "pagingSizeChanged",
-            pageBtnClicked: "pageBtnClicked",
-            curPageChanged: "curPageChanged",
-            reloadItems: "reloadItems",
+            pagingSizeChanged: 'pagingSizeChanged',
+            pageBtnClicked: 'pageBtnClicked',
+            curPageChanged: 'curPageChanged',
+            reloadItems: 'reloadItems',
             // publisher: cart
-            resetItemAmount: "resetItemAmount",
+            resetItemAmount: 'resetItemAmount',
             // publisher: quantityButtons
-            setItemAmountInCart: "setItemCartAmount",
-            addItemToCart: "addItemToCart",
-            removeItemFromCart: "removeItemFromCart",
+            setItemAmountInCart: 'setItemCartAmount',
+            addItemToCart: 'addItemToCart',
+            removeItemFromCart: 'removeItemFromCart',
             // publisher: catalogue
-            sortAscBtnClicked: "sortAscBtnClicked",
-            sortDescBtnClicked: "sortDescBtnClicked",
-            reloadPagination: "reloadPagination"
+            sortAscBtnClicked: 'sortAscBtnClicked',
+            sortDescBtnClicked: 'sortDescBtnClicked',
+            reloadPagination: 'reloadPagination'
             // + curPageChanged
         }
     };
