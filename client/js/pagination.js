@@ -119,7 +119,6 @@
         var pageNmb, btn, pagingFragment = document.createDocumentFragment(),
             pagingSizeValue = (pagingSizeElement.value < itemsNmb) ? pagingSizeElement.value : itemsNmb;
         paginationListElement.innerHTML = '';
-        _.forEach(paginationListElement.childNodes, function(btn) { btn.onclick = undefined; } );
         for (pageNmb = 1; (pageNmb - 1) * pagingSizeValue < itemsNmb; pageNmb++) {
             btn = createPageBtnElement(pageNmb === curPage, pageNmb, pagingSizeValue);
             pagingFragment.appendChild(btn);

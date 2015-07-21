@@ -139,7 +139,7 @@ view = (function () {
      */
     function exposeElements(elements) {
         _.forEach(elements, function (element) {
-            element.className = _.remove(element.classList, hiddenElementClass).join(" ");
+            element.className = _.remove(element.classList, hiddenElementClass).join(' ');
         });
     }
 

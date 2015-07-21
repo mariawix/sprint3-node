@@ -15,6 +15,7 @@
     "view": true,
     "app": true,
     "module": true,
-    "quantityButtons": true
+    "quantityButtons": true,
+    "_": false
   }
 }
