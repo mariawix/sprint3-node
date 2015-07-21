@@ -4,6 +4,8 @@
  */
 (function (app) {
     'use strict';
+    const NOT_FOUND = -1;
+
     var eventBus = app.eventBus,
 
         itemsTableHeaders = ['id', 'name', 'price', 'amount', 'discount', 'total'],
@@ -12,34 +14,18 @@
         addedItems = {};
 
     /**
-     * Returns a clone object of the given item instance.
-     * @param {Object} item item instance to clone
-     * @returns {Object} the clone object of the item
-     */
-    function getItemClone(item) {
-        var i, itemClone = {}, propertyNames = Object.getOwnPropertyNames(item), propertyName;
-        for (i = 0; i < propertyNames.length; i++) {
-            propertyName = propertyNames[i];
-            itemClone[propertyName] = item[propertyName];
-        }
-        return itemClone;
-    }
-
-    /**
      * Sets number of items added to the cart to the specified value.
      * @param {Object} data object {item: item, amount: amount}.
      */
     function setItemAmount(data) {
-        var item = data.item, amount = data.amount, itemClone;
+        var item = data.item;
         if (!addedItems[item.id]) {
-            itemClone = getItemClone(item);
-            itemClone.amount = amount;
-            addedItems[item.id] = itemClone;
+            addedItems[item.id] = _.clone(item);
         } else {
             setTotalBillValue(getTotalBillValue() - getItemPrice(item) * addedItems[item.id].amount);
         }
-        setTotalBillValue(getTotalBillValue() + getItemPrice(item) * amount);
-        addedItems[item.id].amount = amount;
+        setTotalBillValue(getTotalBillValue() + getItemPrice(item) * data.amount);
+        addedItems[item.id].amount = data.amount;
         refreshCart();
     }
 
@@ -48,11 +34,10 @@
      * @param {Object} data object {item: item, amount: amount}.
      */
     function addItemToCart(data) {
-        var item = data.item, itemClone;
+        var item = data.item;
         if (!addedItems[item.id]) {
-            itemClone = getItemClone(item);
-            itemClone.amount = 0;
-            addedItems[item.id] = itemClone;
+            addedItems[item.id] = _.clone(item);
+            addedItems[item.id].amount = 0;
         }
         addedItems[item.id].amount++;
         refreshCart();
@@ -63,8 +48,7 @@
      * @param {Object} data object {item: item, amount: amount}, where item is the item object to be removed
      */
     function removeItemFromCart(data) {
-        var item = data.item;
-        addedItems[item.id].amount = addedItems[item.id].amount - 1;
+        addedItems[data.item.id].amount = addedItems[data.item.id].amount - 1;
         refreshCart();
     }
 
@@ -116,10 +100,7 @@
      */
     function getDiscount(item) {
         var discount = item.discount + couponDiscount;
-        if (discount > 100) {
-            discount = 100;
-        }
-        return discount;
+        return (discount > 100) ? 100: discount;
     }
 
     /**
@@ -132,39 +113,34 @@
     }
 
     /**
-     * Returns coupon object by coupon code
+     * Returns coupon index by coupon code
      * @param {String} couponCode id of a coupon
-     * @returns {Object} coupon object with this id
+     * @returns {Object} index of the coupon with this id if found, NOT_FOUND - otherwise
      */
-    function getCouponByID(couponCode) {
-        for (var i = 0; i < addedCoupons.length; i++) {
-            // TODO: remove String
-            if (String(addedCoupons[i].couponID) === String(couponCode)) {
-                return addedCoupons[i];
-            }
-        }
+    function getCouponIndexByID(couponCode) {
+        return _.findIndex(addedCoupons, {'couponID': couponCode});
     }
 
     /**
      * Validates coupon submitted by user and updates the cart accordingly.
      */
     function addCoupon() {
-        var couponCode;
-        couponCode = popCouponCode();
-        if (!getCouponByID(couponCode)) {
-            app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
-                if (coupon !== '') {
-                    addedCoupons.push(coupon);
-                    if (coupon.discount) {
-                        couponDiscount += coupon.discount;
-                        couponDiscount = (couponDiscount > 100) ? 100 : couponDiscount;
-                    } else {
-                        addItemToCart({item: coupon.freeItem});
-                    }
-                }
-                refreshCart();
-            });
+        var couponCode = popCouponCode();
+        if (getCouponIndexByID(couponCode) !== NOT_FOUND) {
+            return;
         }
+        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
+            if (coupon !== '') {
+                addedCoupons.push(coupon);
+                if (coupon.discount) {
+                    couponDiscount += coupon.discount;
+                    couponDiscount = (couponDiscount > 100) ? 100 : couponDiscount;
+                } else {
+                    addItemToCart({item: coupon.freeItem});
+                }
+            }
+            refreshCart();
+        });
     }
 
     /**************************************************************************************************
@@ -218,8 +194,8 @@
      * Initializes cart tables.
      */
     function initTables() {
-        view.loadTableHead(itemsTableElement, itemsTableHeaders, appendSortBtn);
-        view.loadTableHead(couponTableElement, couponTableHeaders, appendSortBtn);
+        view.loadTableHead(itemsTableElement, itemsTableHeaders);
+        view.loadTableHead(couponTableElement, couponTableHeaders);
     }
 
     /**
@@ -276,7 +252,6 @@
                     cell.innerText = 'Discount val: ' + coupon.discount;
                 }
         }
-
     }
 
     /**
@@ -295,10 +270,6 @@
         view.hideElements([viewCartBtn]);
     }
 
-    function appendSortBtn() {
-        // not supported
-    }
-
     /**
      * Returns coupon code entered by user and resets coupon input field.
      * @returns {String} coupon code
@@ -314,7 +285,7 @@
      * @returns {Number} total bill.
      */
     function getTotalBillValue() {
-        return parseInt(totalBillElement.value, 10);
+        return +totalBillElement.value;
     }
 
     /**

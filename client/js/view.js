@@ -37,7 +37,7 @@ view = (function () {
 
 
     /**
-     * Returns a child element with given class name, contained inside specified parent element.
+     * Returns a child element with given class name, contained inside the specified parent element.
      * @param {Element} parentElement parent element to search in
      * @param {String} className class name of the child element
      * @returns {Element} child element if found, undefined - otherwise
@@ -50,21 +50,20 @@ view = (function () {
      * Loads header cells to the head of the table.
      * @param {Element} tableElement a table element to load the head into
      * @param {Array} headerContent header cells content
-     * @param {Function} appendSortBtns a callback function appending sort buttons to header cells
+     * @param {Function} appendSortBtns (optional) a callback appending sort buttons to header cells,
+     * gets 3 arguments: headerCellElement, headerCellElementInnerText, useAscendingOrder
      */
     function loadTableHead(tableElement, headerContent, appendSortBtns) {
         var row = createCustomElement('div', {'className': tableRowClass}),
             tableHeadElement = getElementByClassName(tableElement, tableHeadClass);
 
-        /**
-         * Appends a header cell to the given head row.
-         * @param {String} content text content of the created header cell
-         */
-        function appendHeaderCell(content) {
-            var headerCellAtts = { 'innerText': content, 'className': _.repeat(' ' + tableHeadCellClass, 2) + '-' + content},
+        function appendHeaderCell(txt) {
+            var headerCellAtts = { 'innerText': txt, 'className': _.repeat(' ' + tableHeadCellClass, 2) + '-' + txt},
                 headerCell = appendChild(row, 'div', headerCellAtts);
-            appendSortBtns(headerCell, content, true);
-            appendSortBtns(headerCell, content, false);
+            if (appendSortBtns) {
+                appendSortBtns(headerCell, txt, true);
+                appendSortBtns(headerCell, txt, false);
+            }
         }
 
         _.forEach(headerContent, function (header) {
@@ -92,7 +91,7 @@ view = (function () {
     }
 
     /**
-     * Returns element value by its class name.
+     * Returns value of the element with the specified class name.
      * @param {Element} parentElement a reference to a parent element
      * @param {String} className class name of the element to search for
      * @returns value of element with the provided class name
@@ -104,7 +103,7 @@ view = (function () {
 
     /**
      * Returns the first body row of the specified table
-     * @param {Element} tableElement a table element containing the row
+     * @param {Element} tableElement a table element
      * @returns {Element} the first row of the body element of the table element
      */
     function getFirstBodyRow(tableElement) {
@@ -116,7 +115,7 @@ view = (function () {
      * Creates row elements from objects.
      * @param {Array} objects objects corresponding to rows
      * @param {Array} keys object keys used as column names
-     * @param {Function} appendCellContent a callback function to run to append content to cells
+     * @param {Function} appendCellContent a callback which appends cell content, gets 3 arguments: objectKey, object, cellElement
      */
     function createRowElements(objects, keys, appendCellContent) {
 
@@ -145,7 +144,7 @@ view = (function () {
     }
 
     /**
-     * Hides elements
+     * Hides elements.
      * @param {Array} elements array of elements to hide
      */
     function hideElements(elements) {

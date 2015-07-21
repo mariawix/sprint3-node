@@ -13,7 +13,7 @@ quantityButtons = (function() {
 
     /**
      * Creates an add to cart button.
-     * @param {Object} data object of the form {item: item, itemAmountElement: itemAmountElement}, passed to the click callback
+     * @param {Object} data object given in the form {item: item, itemAmountElement: itemAmountElement}, passed to the click callback
      * @returns {Element} the newly created button
      */
     function createAddBtn(data) {
@@ -49,7 +49,7 @@ quantityButtons = (function() {
         return btn;
     }
 
-    /**
+    /*
      * Creates an item amount input field.
      * @param {Object} item an item object corresponding to this button
      * @returns {Element} the newly created button
