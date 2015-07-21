@@ -11,7 +11,7 @@
   },
   "globals": {
     "require": true,
-    "document": true,
+    "document": false,
     "view": true,
     "app": true,
     "module": true,

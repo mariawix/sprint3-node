@@ -56,7 +56,7 @@
      */
     function handlePageBtnClick(pageBtnElement) {
         pageBtnElement.onclick = function () {
-            var data = JSON.parse(pageBtnElement.dataset.paging), clickedPage, clickedPageNmb;
+            var data = JSON.parse(pageBtnElement.datasets.paging), clickedPage, clickedPageNmb;
             clickedPage = view.getElementByClassName(pageBtnElement, pageLinkClass);
             clickedPageNmb = parseInt(clickedPage.innerText, 10);
             eventBus.publish(eventBus.eventNames.pageBtnClicked, {start: data.start, end: data.end});
@@ -103,7 +103,7 @@
         }
         pageItemAtts = {
             'className': className,
-            'dataset': { 'paging': '{"start": ' + firstItemIndex + ', "end": ' + endItemIndex + '}' }
+            'datasets': { 'paging': '{"start": ' + firstItemIndex + ', "end": ' + endItemIndex + '}' }
         };
         btn = view.createCustomElement('li', pageItemAtts);
         view.appendChild(btn, 'span', {'className': pageLinkClass, 'innerText': pageIndex});
@@ -116,13 +116,10 @@
      * @param {Number} itemsNmb total number of items
      */
     function loadPaginationBar(curPage, itemsNmb) {
-        var pageNmb, btn, btnNmb,
-            pagingFragment = document.createDocumentFragment(),
+        var pageNmb, btn, pagingFragment = document.createDocumentFragment(),
             pagingSizeValue = (pagingSizeElement.value < itemsNmb) ? pagingSizeElement.value : itemsNmb;
         paginationListElement.innerHTML = '';
-        for (btnNmb = 0; btnNmb < paginationListElement.childNodes.length; btnNmb++) {
-            paginationListElement.childNodes[btnNmb].onclick = undefined;
-        }
+        _.forEach(paginationListElement.childNodes, function(btn) { btn.onclick = undefined; } );
         for (pageNmb = 1; (pageNmb - 1) * pagingSizeValue < itemsNmb; pageNmb++) {
             btn = createPageBtnElement(pageNmb === curPage, pageNmb, pagingSizeValue);
             pagingFragment.appendChild(btn);

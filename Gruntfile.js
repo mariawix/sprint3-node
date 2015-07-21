@@ -40,10 +40,9 @@ module.exports = function(grunt) {
             }
         },
         processhtml: {
-            options: {
-                // Task-specific options go here.
-            },
-            'target/index.html': ['/client/index.html']
+            main: {
+                'target/index.html': ['/client/index.html']
+            }
         },
         copy: {
             main: {

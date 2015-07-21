@@ -19,17 +19,7 @@ view = (function () {
      * @returns {Element} the newly created element
      */
     function createCustomElement(tagName, attributes) {
-        var element = document.createElement(tagName), attKey, objKey;
-        for (attKey in attributes) {
-            if ((typeof attributes[attKey]) === 'object') {
-                for (objKey in attributes[attKey]) {
-                    element[attKey][objKey] = attributes[attKey][objKey];
-                }
-            } else {
-                element[attKey] = attributes[attKey];
-            }
-        }
-        return element;
+        return _.merge(document.createElement(tagName), attributes);
     }
 
     /**
@@ -40,8 +30,7 @@ view = (function () {
      * @returns {Element} the newly created element
      */
     function appendChild(parentElement, tagName, attributes) {
-        var childElement;
-        childElement = createCustomElement(tagName, attributes);
+        var childElement = createCustomElement(tagName, attributes);
         parentElement.appendChild(childElement);
         return childElement;
     }
@@ -72,17 +61,13 @@ view = (function () {
          * @param {String} content text content of the created header cell
          */
         function appendHeaderCell(content) {
-            var headerCell,
-                headerCellAttributes = {
-                    'innerText': content,
-                    'className': tableHeadCellClass + ' ' + tableHeadCellClass + '-' + content
-                };
-            headerCell = appendChild(row, 'div', headerCellAttributes);
+            var headerCellAtts = { 'innerText': content, 'className': _.repeat(' ' + tableHeadCellClass, 2) + '-' + content},
+                headerCell = appendChild(row, 'div', headerCellAtts);
             appendSortBtns(headerCell, content, true);
             appendSortBtns(headerCell, content, false);
         }
 
-        headerContent.forEach(function (header) {
+        _.forEach(headerContent, function (header) {
             appendHeaderCell(header);
         });
         tableHeadElement.appendChild(row);
@@ -113,8 +98,7 @@ view = (function () {
      * @returns value of element with the provided class name
      */
     function getElementValueByClassName(parentElement, className) {
-        var val = getElementByClassName(parentElement, className).innerText, valNmb;
-        valNmb = parseInt(val, 10);
+        var val = getElementByClassName(parentElement, className).innerText, valNmb = +val;
         return (isNaN(valNmb)) ? val : valNmb;
     }
 
@@ -135,17 +119,11 @@ view = (function () {
      * @param {Function} appendCellContent a callback function to run to append content to cells
      */
     function createRowElements(objects, keys, appendCellContent) {
-        var i, rowElements = [];
 
-        /**
-         * Creates a row element.
-         * @param {Object} obj object corresponding to the row
-         * @param {Number} index row index
-         */
-        function createRowElement(obj, index) {
+        function createRowElement(obj, rowNmb) {
             var rowElementClass = tableRowClass + ' ' + tableRowClass + '-' + obj.type,
-                rowElement = createCustomElement('div', {'className': rowElementClass, 'dataset': {'index': index}});
-            keys.forEach(function (key) {
+                rowElement = createCustomElement('div', {'className': rowElementClass, 'datasets': {'index': rowNmb}});
+            _.forEach(keys, function (key) {
                 var className = key + ' ' + tableBodyCellClass,
                     cell = appendChild(rowElement, 'div', {'className': className});
                 appendCellContent(key, obj, cell);
@@ -153,10 +131,7 @@ view = (function () {
             return rowElement;
         }
 
-        for (i = 0; i < objects.length; i++) {
-            rowElements.push(createRowElement(objects[i], i));
-        }
-        return rowElements;
+        return _.map(objects, function(object, index) { return createRowElement(object, index); });
     }
 
     /**
@@ -164,10 +139,8 @@ view = (function () {
      * @param {Array} elements array of hidden elements
      */
     function exposeElements(elements) {
-        elements.forEach(function (element) {
-            if (element.classList.contains(hiddenElementClass)) {
-                element.classList.remove(hiddenElementClass);
-            }
+        _.forEach(elements, function (element) {
+            element.className = _.remove(element.classList, hiddenElementClass).join(" ");
         });
     }
 
@@ -176,10 +149,8 @@ view = (function () {
      * @param {Array} elements array of elements to hide
      */
     function hideElements(elements) {
-        elements.forEach(function (element) {
-            if (!element.classList.contains(hiddenElementClass)) {
-                element.classList.add(hiddenElementClass);
-            }
+        _.forEach(elements, function (element) {
+            element.classList.add(hiddenElementClass);
         });
     }
 

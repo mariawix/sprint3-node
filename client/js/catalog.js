@@ -24,14 +24,11 @@
     }
     /**
      * Reindexes item row elements
-     * @returns {Array} reindexed elements
      */
     function reindexItemRowElements() {
-        var itemIndex;
-        for (itemIndex = 0; itemIndex < itemRowElements.length; itemIndex++) {
-            itemRowElements[itemIndex].dataset.index = itemIndex;
-        }
-        return itemRowElements;
+        _.forEach(itemRowElements, function(itemRowElement, itemIndex) {
+            itemRowElement.datasets.index = itemIndex;
+        });
     }
 
     /**
@@ -115,7 +112,7 @@
     function handlePagingSizeChange(pagingSize) {
         var firstIndex, newCurPage, topRow, topRowIndex;
         topRow = view.getFirstBodyRow(tableElement);
-        topRowIndex = parseInt(topRow.dataset.index, 10);
+        topRowIndex = parseInt(topRow.datasets.index, 10);
         newCurPage = Math.floor(topRowIndex / pagingSize) + 1;
         firstIndex = (newCurPage - 1) * pagingSize;
         loadItems(firstIndex, firstIndex + pagingSize);
