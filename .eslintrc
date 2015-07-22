@@ -16,6 +16,7 @@
     "app": true,
     "module": true,
     "quantityButtons": true,
-    "_": false
+    "_": false,
+    "define": true
   }
 }
