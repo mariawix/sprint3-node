@@ -2,10 +2,11 @@
 /*
  * Loads cart module into the app.
  */
-(function (app) {
+define(function (require) {
     'use strict';
     var NOT_FOUND = -1,
-        eventBus = app.eventBus,
+        eventBus = require('pubsub'),
+        view = require('view'),
 
         itemsTableHeaders = ['id', 'name', 'price', 'amount', 'discount', 'total'],
         couponDiscount = 0,
@@ -297,11 +298,11 @@
         totalBillElement.value = value;
     }
 
-    app.cart = {
+    return {
         init: function () {
             initTables();
             addEventListeners();
         }
     };
 
-}(app));
+});

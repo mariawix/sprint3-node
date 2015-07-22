@@ -1,7 +1,10 @@
-(function (app) {
+define(function (require) {
     'use strict';
+    var catalog = require('catalog'),
+        pagination = require('pagination'),
+        cart = require('cart');
 
-    app.sendRequest = function (method, path, query, callback) {
+    function sendRequest(method, path, query, callback) {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             var responseText = '';
@@ -14,13 +17,9 @@
         };
         xmlhttp.open(method, path + '?' + query, true);
         xmlhttp.send();
-    };
+    }
 
     function run(items) {
-        var catalog = app.catalog,
-            pagination = app.pagination,
-            cart = app.cart;
-
         catalog.init(items);
         pagination.init(items.length);
         catalog.loadRows(0, pagination.getPagingSize());
@@ -46,6 +45,6 @@
         };
     }
 
-    app.sendRequest('GET', '/getItems', '', run);
+    sendRequest('GET', '/getItems', '', run);
 
-}(app));
+});

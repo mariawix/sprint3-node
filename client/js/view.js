@@ -3,7 +3,7 @@
 /**
  * Common DOM helpers.
  */
-view = (function () {
+define(function () {
     'use strict';
     var hiddenElementClass = 'visuallyhidden',
         tableHeadCellClass = 'th',
@@ -169,4 +169,4 @@ view = (function () {
         hideElements: hideElements,
         exposeElements: exposeElements
     };
-}());
+});

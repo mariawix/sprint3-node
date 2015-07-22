@@ -2,14 +2,15 @@
 /*
  * Quantity Buttons Helpers
  */
-quantityButtons = (function() {
+define(function(require) {
     'use strict';
     var quantityBtnsContainerClass = 'item-amount',
         itemAmountInputClass = 'amount',
         addToCartBtnClass = 'add',
         removeFromCartBtnClass = 'remove',
 
-        eventBus = app.eventBus;
+        eventBus = require('pubsub'),
+        view = require('view');
 
     /**
      * Creates an add to cart button.
@@ -94,4 +95,4 @@ quantityButtons = (function() {
     return {
         appendQuantityBtns: appendQuantityBtns
     };
-}());
+});

@@ -1,13 +1,14 @@
 /**
  * Loads pagination module into the app.
  */
-(function (app) {
+define(function (require) {
     'use strict';
     var pageBtnClass = 'page-btn',
         curPageBtnClass = 'current-page-btn',
         pageLinkClass = 'page-link',
 
-        eventBus = app.eventBus,
+        eventBus = require('pubsub'),
+        view = require('view'),
 
         paginationListElement = document.querySelector('.pagination-list'),
         pagingSizeElement = document.querySelector('.paging-size');
@@ -127,8 +128,8 @@
         paginationListElement.appendChild(pagingFragment);
     }
 
-    app.pagination = {
+    return {
         init: init,
         getPagingSize: getPagingSize
     };
-}(app));
+});

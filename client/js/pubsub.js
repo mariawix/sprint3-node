@@ -1,7 +1,7 @@
 /**
  * Event manager used for communication between modules.
  */
-(function PubSub(app) {
+define(function PubSub() {
     'use strict';
     var events = {};
 
@@ -33,7 +33,7 @@
         }
     }
 
-    app.eventBus = {
+    return {
         subscribe: subscribe,
         unsubscribe: unsubscribe,
         publish: publish,
@@ -57,4 +57,4 @@
             // + curPageChanged
         }
     };
-}(app));
+});

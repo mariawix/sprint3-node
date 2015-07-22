@@ -1,12 +1,14 @@
 /*
  * Loads catalogue module into the app
  */
-(function(app) {
+define(function(require) {
     'use strict';
     var sortAscBtnClass = 'sort-asc-btn',
         sortDescBtnClass = 'sort-desc-btn',
 
-        eventBus = app.eventBus,
+        eventBus = require('pubsub'),
+        view = require('view'),
+        quantityButtons = require('quantityButtons'),
 
         tableElement = document.querySelector('.catalog'),
         headers = ['id', 'name', 'description', 'image', 'price', 'cart'],
@@ -135,8 +137,8 @@
         eventBus.subscribe(eventBus.eventNames.sortDescBtnClicked, sortItemRowElements);
     }
 
-    app.catalog = {
+    return {
         init: init,
         loadRows: loadItems
     };
-}(app));
+});
