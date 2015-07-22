@@ -1,23 +1,9 @@
 define(function (require) {
     'use strict';
-    var catalog = require('catalog'),
+    var utils = require('utils'),
+        catalog = require('catalog'),
         pagination = require('pagination'),
         cart = require('cart');
-
-    function sendRequest(method, path, query, callback) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            var responseText = '';
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                if (xmlhttp.responseText !== '') {
-                    responseText = JSON.parse(xmlhttp.responseText);
-                }
-                callback(responseText);
-            }
-        };
-        xmlhttp.open(method, path + '?' + query, true);
-        xmlhttp.send();
-    }
 
     function run(items) {
         catalog.init(items);
@@ -45,6 +31,6 @@ define(function (require) {
         };
     }
 
-    sendRequest('GET', '/getItems', '', run);
+    utils.sendRequest('GET', '/getItems', '', run);
 
 });

@@ -5,6 +5,8 @@
 define(function (require) {
     'use strict';
     var NOT_FOUND = -1,
+
+        utils = require('utils'),
         eventBus = require('pubsub'),
         view = require('view'),
 
@@ -89,7 +91,7 @@ define(function (require) {
         if (getCouponIndexByID(couponCode) !== NOT_FOUND) {
             return;
         }
-        app.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
+        utils.sendRequest('GET', '/getCouponByID', 'couponID=' + couponCode, function (coupon) {
             if (coupon !== '') {
                 addedCoupons.push(coupon);
                 if (coupon.discount) {
